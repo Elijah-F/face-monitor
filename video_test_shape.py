@@ -69,31 +69,39 @@ def get_head_pose(shape):
 
 def main():
     # return
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0)   # 从摄像机中读取视频，0代表使用默认的摄像机
     if not cap.isOpened():
         print("Unable to connect to camera.")
         return
-    detector = dlib.get_frontal_face_detector()
-    predictor = dlib.shape_predictor(face_landmark_path)
+
+    detector = dlib.get_frontal_face_detector()             # 构建人脸框位置探测器
+    predictor = dlib.shape_predictor(face_landmark_path)    # 绘制人脸关键点探测器
 
     while cap.isOpened():
         ret, frame = cap.read()
         if ret:
+            # 根据图像frame,返回人脸的坐标,0是采样次数,因为是实时采样因此最小,否则卡顿
             face_rects = detector(frame, 0)
 
             if len(face_rects) > 0:
+                # 标记人脸关键点，第一个参数指原图像，第二个参数指形状预测的边界框，返回68个关键点的位置
                 shape = predictor(frame, face_rects[0])
+                # 将面部坐标转换为numpy数组
                 shape = face_utils.shape_to_np(shape)
 
+                # 计算欧拉角
                 reprojectdst, euler_angle = get_head_pose(shape)
 
+                # 画68个关键点
                 for (x, y) in shape:
                     cv2.circle(frame, (x, y), 1, (0, 0, 255), -1)
 
+                # 画立方体
                 for start, end in line_pairs:
                     cv2.line(frame, reprojectdst[start],
                              reprojectdst[end], (0, 0, 255))
 
+                # 书写欧拉角
                 cv2.putText(frame, "X: " + "{:7.2f}".format(euler_angle[0, 0]), (20, 20), cv2.FONT_HERSHEY_SIMPLEX,
                             0.75, (0, 0, 0), thickness=2)
                 cv2.putText(frame, "Y: " + "{:7.2f}".format(euler_angle[1, 0]), (20, 50), cv2.FONT_HERSHEY_SIMPLEX,
@@ -101,7 +109,7 @@ def main():
                 cv2.putText(frame, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
                             0.75, (0, 0, 0), thickness=2)
 
-            cv2.imshow("demo", frame)
+            cv2.imshow("face-pose-monitoring", frame)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break

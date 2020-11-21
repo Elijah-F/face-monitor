@@ -1,6 +1,10 @@
 '''test.py'''
+import time
+
 import cv2
 import numpy
+
+import dlib
 
 
 def test_img(arg: str):
@@ -136,10 +140,23 @@ def test_face(arg: str):
     cv2.imshow("face img", img_resized)
     cv2.waitKey(0)
 
+face_landmark_path = './shape_predictor_68_face_landmarks.dat'
 
 if __name__ == "__main__":
+    cap = cv2.VideoCapture(0)
+    if not cap.isOpened():
+        print("unable to connect to camera.")
+    else:
+        print("ok")
+    detector = dlib.get_frontal_face_detector()   # 构建人脸框位置探测器
+    predictor = dlib.shape_predictor(face_landmark_path)   # 绘制人脸关键点探测器
+    while cap.isOpened():
+        ret, frame = cap.read()
+        cv2.imshow("demo", frame)
+        cv2.waitKey(30)
+
     #  test_img("resources/img/ml.jpg")
-    test_video("resources/video/sese.mp4")
+    #  test_video("resources/video/sese.mp4")
     #  test_net_video()
     #  test_gray("resources/img/cb.jpg")
     #  test_size("resources/img/cb.jpg")
