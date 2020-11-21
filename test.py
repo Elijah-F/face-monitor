@@ -139,11 +139,11 @@ def test_face(arg: str):
 
 if __name__ == "__main__":
     #  test_img("resources/img/ml.jpg")
-    #  test_video("resources/video/sese.mp4")
+    test_video("resources/video/sese.mp4")
     #  test_net_video()
     #  test_gray("resources/img/cb.jpg")
     #  test_size("resources/img/cb.jpg")
     #  test_draw("resources/img/cb.jpg")
     #  test_repeat("resources/img/ml.jpg")
     #  test_color("resources/img/ml.jpg")
-    test_face("resources/img/ml.jpg")
+    #  test_face("resources/img/ml.jpg")
