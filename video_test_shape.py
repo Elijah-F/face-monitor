@@ -47,19 +47,47 @@ line_pairs = [[0, 1], [1, 2], [2, 3], [3, 0],
 
 
 def get_head_pose(shape):
+    '''
+    取点:
+        17,21,22,26 眼眉两侧
+        36,39,42,45 眼角
+        31,35       鼻子两侧
+        48,54,57    嘴角和嘴最下点
+        8           下巴
+    '''
     image_pts = np.float32([shape[17], shape[21], shape[22], shape[26], shape[36],
                             shape[39], shape[42], shape[45], shape[31], shape[35],
                             shape[48], shape[54], shape[57], shape[8]])
 
+    '''
+    solvePnP():
+        solvePnPRansac()采用随即抽样一致性算法的思想，计算更加准确但是速度慢，不能满足实时要求
+    @object_pts   关键点的3D Model(世界坐标系)
+    @image_pts    关键点的2D Model(图像坐标系)
+    @cam_matrix   相机内参矩阵
+    @dist_coeffs  相机的畸变参数
+    @rotation_vec 旋转向量，令坐标点从世界坐标系旋转到相机坐标系
+    @translation_vec 平移向量，令坐标点从世界坐标系平移到相机坐标系
+    '''
     _, rotation_vec, translation_vec = cv2.solvePnP(
         object_pts, image_pts, cam_matrix, dist_coeffs)
 
+    '''
+    projectpoints():
+        根据所给的3D坐标和已知的几何变换来求解投影后的2D坐标
+    '''
     reprojectdst, _ = cv2.projectPoints(reprojectsrc, rotation_vec, translation_vec, cam_matrix,
                                         dist_coeffs)
-
     reprojectdst = tuple(map(tuple, reprojectdst.reshape(8, 2)))
 
-    # calc euler angle
+    '''
+    Rodrigues():
+        旋转向量和旋转矩阵的相互转换
+    hconcat():
+        合并矩阵
+    decomposeProjectionMatrix():
+        得到欧拉角
+    '''
     rotation_mat, _ = cv2.Rodrigues(rotation_vec)
     pose_mat = cv2.hconcat((rotation_mat, translation_vec))
     _, _, _, _, _, _, euler_angle = cv2.decomposeProjectionMatrix(pose_mat)
