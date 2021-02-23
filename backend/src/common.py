@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf8 -*-
 
+import logging
+import logging.handlers
 import os
 from configparser import ConfigParser
 
@@ -27,6 +29,49 @@ def init_db():
     return DatabaseHelper(**db_conf)
 
 
+def init_logger(name, log_path=None):
+    log_file = ""
+    if log_path is None:
+        log_path = Config.get("server", "log_path")
+        if not os.path.exists(log_path):
+            os.mkdir(log_path)
+
+        file_name = "".join([name, ".log"])
+        log_file = os.path.join(_path, log_path, file_name)
+
+    logger = logging.getLogger(name)
+
+    if name not in _LOGGERS:
+        _LOGGERS.append(name)
+
+        handler = logging.handlers.RotatingFileHandler(
+            log_file, "a", maxBytes=104857600, backupCount=10
+        )
+
+        log_format = logging.Formatter(
+            "[%(asctime)s] [%(levelname)s] [%(module)s.%(funcName)s:"
+            "%(lineno)d] %(message)s"
+        )
+        handler.setFormatter(log_format)
+
+        logger.addHandler(handler)
+        logger.setLevel(logging.DEBUG)
+
+    return logger
+
+
+def hungry_singleton(cls):
+    instances = {}
+
+    def _singleton(*args, **kw):
+        if cls not in instances:
+            instances[cls] = cls(*args, **kw)
+        return instances[cls]
+
+    return _singleton
+
+
+_LOGGERS = list()
 _path = os.path.dirname(__file__)
 Config = init_config(_path + "/../../etc/config.ini")
 Db_helper = init_db()
