@@ -6,7 +6,7 @@ import logging.handlers
 import os
 from configparser import ConfigParser
 
-from .helpers.db_helper import DatabaseHelper
+from helpers.db_helper import DatabaseHelper
 
 
 def init_config(conf_path):
@@ -71,7 +71,20 @@ def hungry_singleton(cls):
     return _singleton
 
 
+def get_job_name(path):
+    """ transform 'xxx/xxx/xxx/abc_def_handler.py' into 'abc_def' """
+    return os.path.basename(path)[:-11]
+
+
+def change_dir():
+    """ change work dir from 'face_monitor' to 'face_monitor/backend/src' """
+    old_dir = os.getcwd()
+    new_dir = "/".join([old_dir, "backend/src"])
+    os.chdir(new_dir)
+
+
 _LOGGERS = list()
 _path = os.path.dirname(__file__)
-Config = init_config(_path + "/../../etc/config.ini")
+Config = init_config(_path + "/../etc/config.ini")
 Db_helper = init_db()
+Logger = init_logger("server")

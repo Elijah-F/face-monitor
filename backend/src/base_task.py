@@ -4,7 +4,7 @@
 
 from abc import ABC, abstractmethod
 
-from . import common
+import common
 
 
 class BaseTask(ABC):

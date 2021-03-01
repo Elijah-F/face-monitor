@@ -5,7 +5,7 @@
 import os
 import sys
 
-from . import common
+import common
 
 
 @common.hungry_singleton
@@ -52,11 +52,18 @@ def import_handler(path):
         module = __import__(module_name)
 
         if hasattr(module, "JOB_NAME") and module.JOB_NAME:
-            HandlerContainer().regist_handler(module.JOB_NAME, module.ClassOb)
+            HandlerContainer().regist_handler(module.JOB_NAME, module.ClassObj)
 
         if hasattr(module, "API_NAME") and module.API_NAME:
             HandlerContainer().regist_api_handler(module.API_NAME, module.APIClassObj)
 
 
 if __name__ == "__main__":
-    pass
+    common.change_dir()
+    import_handler(r"./sync_handlers")
+    import_handler(r"./async_handlers")
+
+    for x in HandlerContainer().handlers():
+        print(x)
+    for x in HandlerContainer().api_handlers():
+        print(x)
