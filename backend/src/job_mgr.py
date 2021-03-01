@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
+import logging
 import threading
 import traceback
 import uuid
@@ -71,6 +72,9 @@ def add_a_request(handler_name, params):
 
 def _event_loop():
     global _JOBMGR
+
+    # print msg into console
+    logging.basicConfig(level=logging.DEBUG)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)

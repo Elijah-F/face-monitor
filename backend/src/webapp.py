@@ -27,3 +27,7 @@ def start_webapp():
 
     app.listen(listen_port)
     tornado.ioloop.IOLoop.current().start()
+
+
+if __name__ == "__main__":
+    start_webapp()
