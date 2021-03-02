@@ -17,7 +17,7 @@ class BaseTask(ABC):
         return result
 
     @abstractmethod
-    async def inner_run(self, data):
+    async def inner_run(self, job_info):
         return NotImplementedError
 
     async def exec_shell(self, cmd):
