@@ -1,5 +1,4 @@
-import React from 'react';
-import { SmileOutlined, CrownOutlined, RadarChartOutlined } from '@ant-design/icons';
+import { SmileOutlined, RadarChartOutlined } from '@ant-design/icons';
 
 export default [
   {

@@ -6,7 +6,7 @@ const { Dragger } = Upload;
 const props = {
   name: 'image',
   multiple: true,
-  action: '',
+  action: 'http://127.0.0.1:9527/image_flow',
   onChange(info: any) {
     const { status } = info.file;
     if (status !== 'uploading') {
