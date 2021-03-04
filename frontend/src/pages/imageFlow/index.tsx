@@ -12,7 +12,7 @@ const ImageFlow = () => {
       <Dragger
         name="image"
         action="http://127.0.0.1:8998/api/image_flow"
-        listType="picture"
+        listType="picture-card"
         multiple={true}
         fileList={imageList}
         onChange={(info: any) => {
@@ -44,7 +44,7 @@ const ImageFlow = () => {
           if (val.status == 'done') {
             return (
               <Timeline.Item color={colorList[index % colorList.length]} key={val.uid}>
-                {val.name}
+                {val.name} {val.response.job_id}
               </Timeline.Item>
             );
           }

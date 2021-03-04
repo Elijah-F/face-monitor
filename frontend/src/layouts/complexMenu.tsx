@@ -7,13 +7,13 @@ export default [
     icon: <SmileOutlined />,
   },
   {
-    path: '/imageFlow',
-    name: 'Image Flow',
-    icon: <CrownOutlined />,
-  },
-  {
     path: '/videoFlow',
     name: 'Video Flow',
     icon: <RadarChartOutlined />,
+  },
+  {
+    path: '/imageFlow',
+    name: 'Image Flow',
+    icon: <CrownOutlined />,
   },
 ];
