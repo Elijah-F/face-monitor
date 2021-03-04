@@ -1,8 +1,9 @@
-import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
+import ProLayout, { DefaultFooter, PageContainer } from '@ant-design/pro-layout';
+import ProCard from '@ant-design/pro-card';
 import complexMenu from './complexMenu';
 import React from 'react';
 import { Link } from 'umi';
-import './index.css';
+import './index.less';
 
 const BasicLayout: React.FC = (props) => (
   <ProLayout

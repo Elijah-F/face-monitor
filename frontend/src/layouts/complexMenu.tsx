@@ -1,4 +1,4 @@
-import { SmileOutlined, RadarChartOutlined } from '@ant-design/icons';
+import { SmileOutlined, CrownOutlined, RadarChartOutlined } from '@ant-design/icons';
 
 export default [
   {
@@ -9,7 +9,7 @@ export default [
   {
     path: '/imageFlow',
     name: 'Image Flow',
-    icon: <SmileOutlined />,
+    icon: <CrownOutlined />,
   },
   {
     path: '/videoFlow',
