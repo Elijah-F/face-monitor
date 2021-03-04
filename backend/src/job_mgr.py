@@ -18,8 +18,8 @@ class JobMgr(BaseTask):
         self._job_queue = asyncio.Queue(maxsize=1000, loop=self._loop)
         self._handler_ctn = HandlerContainer()
 
-    async def inner_run(self, data=None):
-        _ = data
+    async def inner_run(self, job_info=None):
+        _ = job_info
         self._logger.info("JobMgr start")
 
         while True:
@@ -43,7 +43,6 @@ class JobMgr(BaseTask):
 
     async def add_job(self, job_info):
         await self._job_queue.put(job_info)
-        self._logger.info("new request query: %s", job_info)
 
     def add_job_threadsafe(self, job_info):
         asyncio.run_coroutine_threadsafe(self.add_job(job_info), self._loop)
@@ -60,13 +59,10 @@ def add_a_request(handler_name, params):
     job_info["handler_name"] = handler_name
     job_info["job_id"] = job_id
     job_info["params"] = params
-    Logger.info("new request query: %s", job_info)
 
     _JOBMGR.add_job_threadsafe(job_info)
 
     result = {"code": 0, "msg": "ok", "job_id": job_id}
-    Logger.info("new request result: %s", result)
-
     return result
 
 
