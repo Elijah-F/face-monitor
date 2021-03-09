@@ -30,7 +30,7 @@ class JobImageFlow(BaseTask):
 class ImageFlowAPI(tornado.web.RequestHandler):
     def post(self):
         image = self.request.files["image"][0]
-        Logger.info("new post request image: %s %s", image["filename"], image["content_type"])
+        Logger.info("new post request image: %s %s %s", image["filename"], image["content_type"], len(image["body"]))
 
         result = add_a_request(JOB_NAME, image)
         self.write(result)
