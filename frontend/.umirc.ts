@@ -1,11 +1,14 @@
 import { defineConfig } from 'umi';
 
 export default defineConfig({
-  locale: { antd: true },
   nodeModulesTransform: {
     type: 'none',
   },
   fastRefresh: {},
+  dva: {
+    immer: true,
+    hmr: true,
+  },
   proxy: {
     '/api': {
       target: 'http://127.0.0.1:9527',

@@ -1,6 +1,6 @@
 const initState = {};
 
 export default {
-  namespace: 'user',
+  namespace: 'global',
   state: initState,
 };
