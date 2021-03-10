@@ -1,10 +1,11 @@
+import React from 'react';
 import { useState } from 'react';
 import { Upload, Timeline, Divider, message } from 'antd';
 import { InboxOutlined, ClockCircleOutlined } from '@ant-design/icons';
 
 const { Dragger } = Upload;
 
-const ImageFlow = () => {
+const ImageFlow: React.FC = () => {
   const [imageList, setImageList] = useState<any[]>([]);
 
   return (

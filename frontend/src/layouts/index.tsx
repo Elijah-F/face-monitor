@@ -1,5 +1,4 @@
-import ProLayout, { DefaultFooter, PageContainer } from '@ant-design/pro-layout';
-import ProCard from '@ant-design/pro-card';
+import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import complexMenu from './complexMenu';
 import React from 'react';
 import { Link } from 'umi';
