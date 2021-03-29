@@ -3,7 +3,6 @@ import complexMenu from './complexMenu';
 import Login from './Login';
 import React from 'react';
 import { Link } from 'umi';
-import './index.less';
 
 const BasicLayout: React.FC = (props) => (
   <ProLayout
@@ -20,7 +19,7 @@ const BasicLayout: React.FC = (props) => (
     footerRender={() => <DefaultFooter copyright="2021, fufuzhao. All right reserved" links={[]} />}
   >
     <Login />
-    <div className="site-layout-content">{props.children}</div>
+    <div style={{ minHeight: 280, padding: 24, background: '#fff' }}>{props.children}</div>
   </ProLayout>
 );
 
