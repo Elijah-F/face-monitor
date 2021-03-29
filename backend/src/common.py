@@ -44,13 +44,10 @@ def init_logger(name, log_path=None):
     if name not in _LOGGERS:
         _LOGGERS.append(name)
 
-        handler = logging.handlers.RotatingFileHandler(
-            log_file, "a", maxBytes=104857600, backupCount=10
-        )
+        handler = logging.handlers.RotatingFileHandler(log_file, "a", maxBytes=104857600, backupCount=10)
 
         log_format = logging.Formatter(
-            "[%(asctime)s] [%(levelname)s] [%(module)s.%(funcName)s:"
-            "%(lineno)d] %(message)s"
+            "[%(asctime)s] [%(levelname)s] [%(module)s.%(funcName)s:" "%(lineno)d] %(message)s"
         )
         handler.setFormatter(log_format)
 
