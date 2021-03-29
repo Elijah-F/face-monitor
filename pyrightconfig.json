@@ -2,7 +2,7 @@
   "executionEnvironments": [
     {
       "root": "backend",
-      "pythonVersion": "3.9",
+      "pythonVersion": "3.6",
       "pythonPlatform": "Linux",
       "extraPaths": [
         "backend/src"
