@@ -1,8 +1,26 @@
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import complexMenu from './complexMenu';
+import { SmileOutlined, CrownOutlined, RadarChartOutlined } from '@ant-design/icons';
 import Login from './Login';
 import React from 'react';
 import { Link } from 'umi';
+
+const complexMenu = [
+  {
+    path: '/realTime',
+    name: 'Real Time',
+    icon: <SmileOutlined />,
+  },
+  {
+    path: '/videoFlow',
+    name: 'Video Flow',
+    icon: <RadarChartOutlined />,
+  },
+  {
+    path: '/imageFlow',
+    name: 'Image Flow',
+    icon: <CrownOutlined />,
+  },
+];
 
 const BasicLayout: React.FC = (props) => (
   <ProLayout
