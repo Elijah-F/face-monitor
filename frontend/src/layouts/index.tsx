@@ -2,7 +2,7 @@ import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import { SmileOutlined, CrownOutlined, RadarChartOutlined } from '@ant-design/icons';
 import React from 'react';
 import { Link } from 'umi';
-import SimpleLayout from './SimpleLayout';
+import LoginLayout from './LoginLayout';
 
 const complexMenu = [
   {
@@ -23,8 +23,8 @@ const complexMenu = [
 ];
 
 const BasicLayout: React.FC = (props) => {
-  if (props.location.pathname === '/login') {
-    return <SimpleLayout>{props.children}</SimpleLayout>;
+  if (props.location.pathname === '/login' || props.location.pathname === '/register') {
+    return <LoginLayout>{props.children}</LoginLayout>;
   }
   return (
     <ProLayout

@@ -2,7 +2,7 @@ import React from 'react';
 import { Form, Input, Button } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 
-const Login: React.FC = () => {
+const Register: React.FC = () => {
   return (
     <Form name="login">
       <Form.Item name="username" rules={[{ required: true, message: 'Please input your username!' }]}>
@@ -13,11 +13,11 @@ const Login: React.FC = () => {
       </Form.Item>
       <Form.Item>
         <Button type="primary" htmlType="submit">
-          Login in
+          Register
         </Button>
       </Form.Item>
     </Form>
   );
 };
 
-export default Login;
+export default Register;
