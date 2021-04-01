@@ -30,6 +30,15 @@ def init_db():
 
 
 def init_logger(name, log_path=None):
+    """generate a logger using name provided in args
+
+    Args:
+        name(str): logger name
+        log_path(str): log file path, search config.ini if not provide
+
+    Returns:
+        a log class: log info will be writed in {log_path}/{name}.log
+    """
     log_file = ""
     if log_path is None:
         log_path = Config.get("server", "log_path")
@@ -83,5 +92,5 @@ def change_dir():
 _LOGGERS = list()
 _path = os.path.dirname(__file__)
 Config = init_config(_path + "/../etc/config.ini")
-Db_helper = init_db()
+# Db_helper = init_db()
 Logger = init_logger("server")

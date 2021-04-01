@@ -3,6 +3,7 @@
 
 from typing import Dict
 
+import common
 import pymysql
 
 
@@ -14,6 +15,7 @@ class DatabaseHelper:
         self._user = kvs.get("user", "root")
         self._host = kvs.get("host", "localhost")
         self._passwd = kvs.get("passwd", "root")
+        self._logger = common.init_logger("db_helper")
 
     def connect(self):
         self._conn = pymysql.connect(
@@ -32,20 +34,21 @@ class DatabaseHelper:
             self._conn.ping()
             self._conn.commit()
         except Exception as err:
-            print("db ping info: ", err)
+            self._logger.error("db ping info: %s", err)
             try:
                 self._conn.ping(reconnect=True)
                 self._conn.commit()
             except Exception:
-                print("db connecting...")
+                self._logger.info("db connecting...")
                 self.connect()
-                print("connected")
+                self._logger.info("db connected.")
 
     def query(self, sql, args=None):
         self.ping()
 
         with self._conn.cursor(pymysql.cursors.DictCursor) as cursor:
             cursor.execute(sql, args)
+            self._logger.info(sql)
             return cursor.fetchall()
 
     def update(self, sql, args=None):
@@ -67,9 +70,10 @@ class DatabaseHelper:
         with self._conn.cursor() as cursor:
             insert_keys = kvs.keys()
             insert_keys_string = ", ".join([f"`{key}`" for key in insert_keys])
-            insert_values_string = ", ".join([f"%%({key})s)" for key in insert_keys])
+            insert_values_string = ", ".join([f"%({key})s" for key in insert_keys])
 
             sql = f"INSERT INTO {table} ({insert_keys_string}) VALUES ({insert_values_string})"
+            self._logger.info(sql)
 
             cursor.execute(sql, kvs)
             self._conn.commit()
