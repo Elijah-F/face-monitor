@@ -38,7 +38,7 @@ const BasicLayout: React.FC = (props) => {
         }
         return <Link to={path}>{dom}</Link>;
       }}
-      footerRender={() => <DefaultFooter copyright="2021, fufuzhao. All right reserved" links={[]} />}
+      footerRender={() => <DefaultFooter copyright="2021, fufuzhao. All right reserved." links={[]} />}
     >
       <div style={{ minHeight: 280, padding: 24, background: '#fff' }}>{props.children}</div>
     </ProLayout>
