@@ -12,7 +12,7 @@ const ImageFlow: React.FC = () => {
     <>
       <Dragger
         name="image"
-        action="http://127.0.0.1:8998/api/image_flow"
+        action="http://192.168.12.133:8998/api/image_flow"
         listType="picture-card"
         multiple={true}
         fileList={imageList}
