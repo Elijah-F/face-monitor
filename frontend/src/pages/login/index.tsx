@@ -1,6 +1,6 @@
 import React from 'react';
 import { useHistory } from 'umi';
-import { message, Button } from 'antd';
+import { message, Button, Modal } from 'antd';
 import ProForm, { ProFormText, ProFormCaptcha } from '@ant-design/pro-form';
 import { MobileOutlined, MailOutlined } from '@ant-design/icons';
 import { login, register } from '@/services/login';
@@ -18,27 +18,22 @@ const Login: React.FC = () => {
   const onFinishHandler = async (value: LoginData) => {
     const resp = await login(value.phone);
     if (resp.code !== 0) {
-      message.error(
-        <>
-          {resp.message}
-          <Button
-            type="dashed"
-            block
-            style={{ color: 'orangered' }}
-            onClick={async () => {
-              const resp = await register(value.phone);
-              if (resp.code !== 0) {
-                message.error(resp.message);
-                return;
-              }
-              dispatch({ type: 'global/setUserPhone', payload: value.phone });
-              history.push('/realTime');
-            }}
-          >
-            register && login in?
-          </Button>
-        </>,
-      );
+      Modal.confirm({
+        title: 'Account is not existed!',
+        content: 'Account is not existed! Whether to register with the current phone number?',
+        cancelText: 'cancel',
+        okText: 'register',
+        cancelButtonProps: { danger: true },
+        okButtonProps: { ghost: true },
+        onOk: async () => {
+          const resp = await register(value.phone);
+          if (resp.code !== 0) {
+            message.error(resp.message);
+            return;
+          }
+          message.info('register success!');
+        },
+      });
       return;
     }
     dispatch({ type: 'global/setUserPhone', payload: value.phone });
