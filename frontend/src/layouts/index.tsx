@@ -1,9 +1,10 @@
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import { SmileOutlined, CrownOutlined, RadarChartOutlined } from '@ant-design/icons';
+import { SmileOutlined, CrownOutlined, RadarChartOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useEffect } from 'react';
-import { Link, useHistory, useSelector } from 'umi';
+import { Link, useHistory, useSelector, useLocation } from 'umi';
 import LoginLayout from './LoginLayout';
 import { RootState } from '@/store';
+import { Avatar } from 'antd';
 
 const complexMenu = [
   {
@@ -26,6 +27,7 @@ const complexMenu = [
 const BasicLayout: React.FC = (props) => {
   const userPhone = useSelector((state: RootState) => state.global.userPhone);
   const history = useHistory();
+  const location = useLocation();
 
   // first login in, then balabala...
   useEffect(() => {
@@ -34,7 +36,7 @@ const BasicLayout: React.FC = (props) => {
     }
   }, [userPhone]);
 
-  if (props.location.pathname === '/login' || props.location.pathname === '/register') {
+  if (location.pathname === '/login' || location.pathname === '/register') {
     return <LoginLayout>{props.children}</LoginLayout>;
   }
   return (
@@ -50,6 +52,7 @@ const BasicLayout: React.FC = (props) => {
         return <Link to={path}>{dom}</Link>;
       }}
       footerRender={() => <DefaultFooter copyright="2021, fufuzhao. All right reserved." links={[]} />}
+      rightContentRender={() => <Avatar icon={<UserOutlined />} style={{ marginRight: 30 }} />}
     >
       <div style={{ minHeight: 280, padding: 24, background: '#fff' }}>{props.children}</div>
     </ProLayout>
