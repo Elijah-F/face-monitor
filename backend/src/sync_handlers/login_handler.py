@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import json
+
 import tornado.web
 from helpers import db_operator
 
@@ -10,12 +12,13 @@ class LoginAPI(tornado.web.RequestHandler):
         self.db_operator = db_operator.DbOperator()
 
     def post(self):
-        phone = self.get_body_argument("phone")
-        result = {"success": 0, "message": "ok"}
+        data = json.loads(self.request.body)
+        phone = data["phone"]
+        result = {"code": 0, "message": "ok"}
 
         user_info = self.db_operator.select_user_info(phone)
         if len(user_info) == 0:
-            result["success"] = -1
+            result["code"] = -1
             result["message"] = "Phone number has not existed."
             self.write(result)
             return
