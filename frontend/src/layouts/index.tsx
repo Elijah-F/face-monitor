@@ -1,8 +1,9 @@
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
 import { SmileOutlined, CrownOutlined, RadarChartOutlined } from '@ant-design/icons';
-import React from 'react';
-import { Link } from 'umi';
+import React, { useEffect } from 'react';
+import { Link, useHistory, useSelector } from 'umi';
 import LoginLayout from './LoginLayout';
+import { RootState } from '@/store';
 
 const complexMenu = [
   {
@@ -23,6 +24,16 @@ const complexMenu = [
 ];
 
 const BasicLayout: React.FC = (props) => {
+  const userPhone = useSelector((state: RootState) => state.global.userPhone);
+  const history = useHistory();
+
+  // first login in, then balabala...
+  useEffect(() => {
+    if (userPhone === '') {
+      history.push('/login');
+    }
+  }, [userPhone]);
+
   if (props.location.pathname === '/login' || props.location.pathname === '/register') {
     return <LoginLayout>{props.children}</LoginLayout>;
   }

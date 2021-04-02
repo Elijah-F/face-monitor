@@ -1,11 +1,10 @@
 import React from 'react';
-import { history } from 'umi';
+import { useHistory } from 'umi';
 import { message, Button } from 'antd';
 import ProForm, { ProFormText, ProFormCaptcha } from '@ant-design/pro-form';
 import { MobileOutlined, MailOutlined } from '@ant-design/icons';
 import { login, register } from '@/services/login';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@/store';
+import { useDispatch } from 'react-redux';
 
 export interface LoginData {
   phone: string;
@@ -13,8 +12,8 @@ export interface LoginData {
 }
 
 const Login: React.FC = () => {
-  const { userPhone } = useSelector((state: RootState) => state.global);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const onFinishHandler = async (value: LoginData) => {
     const resp = await login(value.phone);
