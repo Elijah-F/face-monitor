@@ -1,16 +1,55 @@
 import React from 'react';
-import { message } from 'antd';
+import { history } from 'umi';
+import { message, Button } from 'antd';
 import ProForm, { ProFormText, ProFormCaptcha } from '@ant-design/pro-form';
 import { MobileOutlined, MailOutlined } from '@ant-design/icons';
+import { login, register } from '@/services/login';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store';
+
+export interface LoginData {
+  phone: string;
+  captcha: string;
+}
 
 const Login: React.FC = () => {
+  const { userPhone } = useSelector((state: RootState) => state.global);
+  const dispatch = useDispatch();
+
+  const onFinishHandler = async (value: LoginData) => {
+    const resp = await login(value.phone);
+    if (resp.code !== 0) {
+      message.error(
+        <>
+          {resp.message}
+          <Button
+            type="dashed"
+            block
+            style={{ color: 'orangered' }}
+            onClick={async () => {
+              const resp = await register(value.phone);
+              if (resp.code !== 0) {
+                message.error(resp.message);
+                return;
+              }
+              dispatch({ type: 'global/setUserPhone', payload: value.phone });
+              history.push('/realTime');
+            }}
+          >
+            register && login in?
+          </Button>
+        </>,
+      );
+      return;
+    }
+    dispatch({ type: 'global/setUserPhone', payload: value.phone });
+    history.push('/realTime');
+  };
+
   return (
     <div style={{ width: 330, margin: 'auto' }}>
       <ProForm
-        onFinish={async () => {
-          // await waitTime(2000);
-          message.success('提交成功');
-        }}
+        onFinish={onFinishHandler}
         submitter={{
           searchConfig: { submitText: '登录' },
           render: (_, dom) => dom.pop(),
@@ -45,7 +84,6 @@ const Login: React.FC = () => {
           rules={[{ required: true, message: '请输入验证码' }]}
           placeholder="请输入验证码"
           onGetCaptcha={async (phone) => {
-            // await waitTime(1000);
             message.success(`手机号 ${phone} 验证码发送成功!`);
           }}
         />

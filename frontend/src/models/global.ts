@@ -2,6 +2,7 @@ import { ImmerReducer } from 'umi';
 
 export interface GlobalState {
   userName: string;
+  userPhone: string;
 }
 
 export interface GlobalModelType {
@@ -9,15 +10,19 @@ export interface GlobalModelType {
   state: GlobalState;
   reducers: {
     setUserName: ImmerReducer<GlobalState>;
+    setUserPhone: ImmerReducer<GlobalState>;
   };
 }
 
 const GlobalModel: GlobalModelType = {
   namespace: 'global',
-  state: { userName: '' },
+  state: { userName: '', userPhone: '' },
   reducers: {
     setUserName(state, action) {
       state.userName = action.payload;
+    },
+    setUserPhone(state, action) {
+      state.userPhone = action.payload;
     },
   },
 };
