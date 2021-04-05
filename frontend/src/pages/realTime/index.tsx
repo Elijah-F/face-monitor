@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { useInterval } from '@/utils/hooks';
-import { Button, TimePicker, Divider, Space, Cascader, Card, Row } from 'antd';
+import { Button, TimePicker, Divider, Space, Select, Card, Row } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
 
 const RealTime: React.FC = () => {
@@ -37,7 +37,18 @@ const RealTime: React.FC = () => {
     <>
       <Space>
         <TimePicker />
-        <Cascader />
+        <Select
+          defaultValue="100"
+          onChange={(value) => {
+            setDelay(Number(value));
+          }}
+        >
+          <Select.Option value="50" disabled>
+            20FPS(慎用)
+          </Select.Option>
+          <Select.Option value="100">10FPS</Select.Option>
+          <Select.Option value="200">5FPS</Select.Option>
+        </Select>
         <Button
           type="primary"
           danger={isPlaying}
