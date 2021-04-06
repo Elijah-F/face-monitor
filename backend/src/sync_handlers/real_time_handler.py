@@ -1,5 +1,8 @@
+import re
+
 import common
 import tornado.websocket
+from helpers import utils
 
 
 class RealTimeAPI(tornado.websocket.WebSocketHandler):
@@ -22,6 +25,9 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
         # TODO: decode the image/webp type file
         #       and tackle it head-on with cv2 or dlib lib
         #       return the handled image for showing in frontend
+        # utils.webp_2_jpeg(message)
+        base64_webp_str = re.sub("^data:image/webp;base64,", "", message)
+        jpeg = utils.webp_2_others(base64_webp_str)
         self.write_message("okok")
 
 
