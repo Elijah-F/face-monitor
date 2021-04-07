@@ -28,7 +28,7 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
         # utils.webp_2_jpeg(message)
         base64_webp_str = re.sub("^data:image/webp;base64,", "", message)
         jpeg = utils.webp_2_others(base64_webp_str)
-        self.write_message("okok")
+        self.write_message(message)
 
 
 API_NAME = "/real_time"

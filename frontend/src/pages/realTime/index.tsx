@@ -3,35 +3,27 @@ import Webcam from 'react-webcam';
 import { useInterval } from '@/utils/hooks';
 import { Button, TimePicker, Divider, Space, Select, Card, Row } from 'antd';
 import { PoweroffOutlined } from '@ant-design/icons';
+import useWebSocket from 'react-use-websocket';
 
 const RealTime: React.FC = () => {
   const webcamRef = useRef();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [delay, setDelay] = useState<number>(100);
   const [imgSrc, setImgSrc] = useState();
-  const [ws, setWs] = useState<WebSocket | null>(null);
+
+  const { sendMessage, lastMessage } = useWebSocket('ws://192.168.12.133:9527/real_time');
 
   useInterval(
     () => {
       const imageSrc = webcamRef.current.getScreenshot();
-      setImgSrc(imageSrc);
-      ws?.send(imageSrc);
+      sendMessage(imageSrc);
     },
     isPlaying ? delay : null,
   );
 
   useEffect(() => {
-    setWs(new WebSocket('ws://192.168.12.133:9527/real_time'));
-    if (ws) {
-      ws.onmessage = (evt) => {
-        console.log(evt);
-      };
-    }
-    return () => {
-      ws?.close();
-      setWs(null);
-    };
-  }, [setWs]);
+    setImgSrc(lastMessage?.data);
+  }, [lastMessage]);
 
   return (
     <>
