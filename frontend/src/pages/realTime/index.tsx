@@ -30,7 +30,7 @@ const RealTime: React.FC = () => {
       <Space>
         <TimePicker />
         <Select
-          defaultValue="100"
+          defaultValue="200"
           onChange={(value) => {
             setDelay(Number(value));
           }}

@@ -1,14 +1,15 @@
 import React from 'react';
 import { useHistory } from 'umi';
-import { message, Button, Modal } from 'antd';
+import { message, notification, Modal } from 'antd';
 import ProForm, { ProFormText, ProFormCaptcha } from '@ant-design/pro-form';
-import { MobileOutlined, MailOutlined } from '@ant-design/icons';
+import { MobileOutlined, MailOutlined, TagsOutlined } from '@ant-design/icons';
 import { login, register } from '@/services/login';
 import { useDispatch } from 'react-redux';
 
 export interface LoginData {
   phone: string;
   captcha: string;
+  room: string;
 }
 
 const Login: React.FC = () => {
@@ -16,8 +17,8 @@ const Login: React.FC = () => {
   const history = useHistory();
 
   const onFinishHandler = async (value: LoginData) => {
-    const resp = await login(value.phone);
-    if (resp.code !== 0) {
+    const resp = await login(value.phone, value.room);
+    if (resp.code === -100) {
       Modal.confirm({
         title: 'Account is not existed!',
         content: 'Account is not existed! Whether to register with the current phone number?',
@@ -36,7 +37,19 @@ const Login: React.FC = () => {
       });
       return;
     }
+    if (resp.code === 100) {
+      notification.success({
+        message: '房间已经存在，加入成功!',
+      });
+    }
+    if (resp.code === 0) {
+      notification.success({
+        message: '房间创建成功!',
+        description: '您已经成为该房间管理员!',
+      });
+    }
     dispatch({ type: 'global/setUserPhone', payload: value.phone });
+    dispatch({ type: 'global/setRoom', payload: value.room });
     history.push('/realTime');
   };
 
@@ -68,6 +81,15 @@ const Login: React.FC = () => {
           rules={[
             { required: true, message: '请输入手机号!' },
             { pattern: /^1\d{10}$/, message: '不合法的手机号格式!' },
+          ]}
+        />
+        <ProFormText
+          fieldProps={{ size: 'large', prefix: <TagsOutlined /> }}
+          name="room"
+          placeholder="请输入房间号"
+          rules={[
+            { required: true, message: '请输入五位房间号!' },
+            { pattern: /^\d{5}$/, message: '不合法的房间号!' },
           ]}
         />
         <ProFormCaptcha

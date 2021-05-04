@@ -5,8 +5,8 @@ export interface BasicResp {
   message: string;
 }
 
-export async function login(phone: string): Promise<BasicResp> {
-  const { data } = await request.post('/login', { phone });
+export async function login(phone: string, room: string): Promise<BasicResp> {
+  const { data } = await request.post('/login', { phone, room });
   return data;
 }
 
