@@ -28,7 +28,7 @@ class FaceHelper:
         face_detector = cv2.CascadeClassifier(
             os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
         )
-        face_position = face_detector.detectMultiScale(gray_image, scaleFactor=1.05, minNeighbors=3, minSize=(80, 80))
+        face_position = face_detector.detectMultiScale(gray_image, scaleFactor=1.03, minNeighbors=3, minSize=(40, 40))
 
         # draw square for face
         for x, y, w, h in face_position:

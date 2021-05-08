@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { useInterval } from '@/utils/hooks';
-import { Button, TimePicker, Divider, Space, Select, Card, Row, Col, Avatar } from 'antd';
+import { Button, Divider, Space, Select, Card, Row, Col } from 'antd';
 import { PoweroffOutlined, EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import useWebSocket from 'react-use-websocket';
 import { useSelector } from 'umi';
@@ -24,10 +24,8 @@ const RealTime: React.FC = () => {
       const imageSrc = webcamRef.current.getScreenshot();
       if (!isAdmin) {
         sendMessage(imageSrc);
-        console.log('general');
       } else {
         sendMessage('admin');
-        console.log('admin');
       }
     },
     isPlaying ? delay : null,
@@ -78,7 +76,6 @@ const RealTime: React.FC = () => {
         </Button>
       </Space>
       <Divider />
-
       <Row gutter={[8, 8]}>
         <Col span={span}>
           <Card
@@ -93,8 +90,9 @@ const RealTime: React.FC = () => {
           </Card>
         </Col>
         {Object.keys(imgSrc).map((element) => (
-          <Col span={span}>
+          <Col key={element} span={span}>
             <Card
+              key={element}
               cover={<img src={imgSrc[element]} />}
               actions={[
                 <SettingOutlined key="setting" />,
