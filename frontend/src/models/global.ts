@@ -3,7 +3,8 @@ import { ImmerReducer } from 'umi';
 export interface GlobalState {
   userName: string;
   userPhone: string;
-  room: string;
+  userRoom: string;
+  isAdmin: boolean;
 }
 
 export interface GlobalModelType {
@@ -13,12 +14,13 @@ export interface GlobalModelType {
     setUserName: ImmerReducer<GlobalState>;
     setUserPhone: ImmerReducer<GlobalState>;
     setRoom: ImmerReducer<GlobalState>;
+    setIsAdmin: ImmerReducer<GlobalState>;
   };
 }
 
 const GlobalModel: GlobalModelType = {
   namespace: 'global',
-  state: { userName: '', userPhone: '', room: '' },
+  state: { userName: '', userPhone: '', userRoom: '', isAdmin: false },
   reducers: {
     setUserName(state, action) {
       state.userName = action.payload;
@@ -27,7 +29,10 @@ const GlobalModel: GlobalModelType = {
       state.userPhone = action.payload;
     },
     setRoom(state, action) {
-      state.room = action.payload;
+      state.userRoom = action.payload;
+    },
+    setIsAdmin(state, action) {
+      state.isAdmin = action.payload;
     },
   },
 };

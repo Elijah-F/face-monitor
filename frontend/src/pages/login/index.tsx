@@ -47,6 +47,7 @@ const Login: React.FC = () => {
         message: '房间创建成功!',
         description: '您已经成为该房间管理员!',
       });
+      dispatch({ type: 'global/setIsAdmin', payload: true });
     }
     dispatch({ type: 'global/setUserPhone', payload: value.phone });
     dispatch({ type: 'global/setRoom', payload: value.room });

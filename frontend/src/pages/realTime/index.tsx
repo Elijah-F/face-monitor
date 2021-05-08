@@ -1,28 +1,44 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Webcam from 'react-webcam';
 import { useInterval } from '@/utils/hooks';
-import { Button, TimePicker, Divider, Space, Select, Card, Row } from 'antd';
-import { PoweroffOutlined } from '@ant-design/icons';
+import { Button, TimePicker, Divider, Space, Select, Card, Row, Col, Avatar } from 'antd';
+import { PoweroffOutlined, EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import useWebSocket from 'react-use-websocket';
+import { useSelector } from 'umi';
+import { RootState } from '@/store';
 
 const RealTime: React.FC = () => {
   const webcamRef = useRef();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [delay, setDelay] = useState<number>(100);
-  const [imgSrc, setImgSrc] = useState();
+  const [imgSrc, setImgSrc] = useState({});
+  const { userRoom, userPhone, isAdmin } = useSelector((state: RootState) => state.global);
 
-  const { sendMessage, lastMessage } = useWebSocket('ws://192.168.12.133:9527/real_time');
+  const { sendMessage, lastMessage } = useWebSocket(
+    `ws://192.168.12.133:9527/real_time?phone=${userPhone}&room=${userRoom}`,
+  );
 
   useInterval(
     () => {
       const imageSrc = webcamRef.current.getScreenshot();
-      sendMessage(imageSrc);
+      if (!isAdmin) {
+        sendMessage(imageSrc);
+        console.log('general');
+      } else {
+        sendMessage('admin');
+        console.log('admin');
+      }
     },
     isPlaying ? delay : null,
   );
 
   useEffect(() => {
-    setImgSrc(lastMessage?.data);
+    if (lastMessage) {
+      const tmp = imgSrc;
+      const lastData = JSON.parse(lastMessage.data);
+      Object.keys(lastData).forEach((element) => (tmp[element] = lastData[element]));
+      setImgSrc(tmp);
+    }
   }, [lastMessage]);
 
   return (
@@ -54,13 +70,33 @@ const RealTime: React.FC = () => {
       </Space>
       <Divider />
 
-      <Row>
-        <Card>
-          <Webcam style={{ display: 'block' }} audio={false} ref={webcamRef} screenshotFormat="image/webp" />
-        </Card>
-        <Card>
-          <img src={imgSrc} />
-        </Card>
+      <Row gutter={[8, 8]}>
+        <Col span={4}>
+          <Card
+            cover={<Webcam style={{ display: 'block' }} audio={false} ref={webcamRef} screenshotFormat="image/webp" />}
+            actions={[
+              <SettingOutlined key="setting" />,
+              <EditOutlined key="edit" />,
+              <EllipsisOutlined key="ellipsis" />,
+            ]}
+          >
+            <Card.Meta title="native camerel" description="This is the description" />
+          </Card>
+        </Col>
+        {Object.keys(imgSrc).map((element) => (
+          <Col span={4}>
+            <Card
+              cover={<img src={imgSrc[element]} />}
+              actions={[
+                <SettingOutlined key="setting" />,
+                <EditOutlined key="edit" />,
+                <EllipsisOutlined key="ellipsis" />,
+              ]}
+            >
+              <Card.Meta title={element} description="This is the description" />
+            </Card>
+          </Col>
+        ))}
       </Row>
     </>
   );

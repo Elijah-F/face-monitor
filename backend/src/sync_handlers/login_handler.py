@@ -21,6 +21,7 @@ class LoginAPI(tornado.web.RequestHandler):
         room = data["room"]
         result = {"code": 0, "message": "ok"}
 
+        # Does the acount exists?
         user_info = self.db_operator.select_user_info(phone)
         if len(user_info) == 0:
             result["code"] = PhoneNotExist["code"]
@@ -31,9 +32,6 @@ class LoginAPI(tornado.web.RequestHandler):
         if room in self.rooms:
             result["code"] = RoomExist["code"]
             result["message"] = RoomExist["message"]
-
-        self.rooms[room].append(phone)
-        print(self.rooms.pool)
 
         result["name"] = "" if user_info[0]["name"] is None else user_info[0]["name"]
         self.write(result)
