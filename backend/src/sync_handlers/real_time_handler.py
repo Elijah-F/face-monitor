@@ -51,7 +51,8 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
         base64_webp_str = re.sub("^data:image/webp;base64,", "", message)
 
         jpeg = utils.webp_2_others(base64_webp_str)
-        jpeg_face = self.face.mark_face_position(jpeg)
+        # jpeg_face = self.face.mark_face_position(jpeg)
+        jpeg_face = self.face.mark_68_points(jpeg)
 
         base64_jpeg_str = utils.b64encode_image(jpeg_face)
         img_tag_src = "".join(["data:image/jpeg;base64,", base64_jpeg_str])
