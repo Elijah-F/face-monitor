@@ -11,6 +11,7 @@ const RealTime: React.FC = () => {
   const webcamRef = useRef();
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [delay, setDelay] = useState<number>(100);
+  const [span, setSpan] = useState<number>(4);
   const [imgSrc, setImgSrc] = useState({});
   const { userRoom, userPhone, isAdmin } = useSelector((state: RootState) => state.global);
 
@@ -44,18 +45,26 @@ const RealTime: React.FC = () => {
   return (
     <>
       <Space>
-        <TimePicker />
+        <Select
+          defaultValue="4"
+          onChange={(value) => {
+            setSpan(Number(value));
+          }}
+        >
+          <Select.Option value="4">紧密排列</Select.Option>
+          <Select.Option value="8">疏松排列</Select.Option>
+        </Select>
         <Select
           defaultValue="200"
           onChange={(value) => {
             setDelay(Number(value));
           }}
         >
+          <Select.Option value="200">5FPS</Select.Option>
+          <Select.Option value="100">10FPS</Select.Option>
           <Select.Option value="50" disabled>
             20FPS(慎用)
           </Select.Option>
-          <Select.Option value="100">10FPS</Select.Option>
-          <Select.Option value="200">5FPS</Select.Option>
         </Select>
         <Button
           type="primary"
@@ -71,7 +80,7 @@ const RealTime: React.FC = () => {
       <Divider />
 
       <Row gutter={[8, 8]}>
-        <Col span={4}>
+        <Col span={span}>
           <Card
             cover={<Webcam style={{ display: 'block' }} audio={false} ref={webcamRef} screenshotFormat="image/webp" />}
             actions={[
@@ -84,7 +93,7 @@ const RealTime: React.FC = () => {
           </Card>
         </Col>
         {Object.keys(imgSrc).map((element) => (
-          <Col span={4}>
+          <Col span={span}>
             <Card
               cover={<img src={imgSrc[element]} />}
               actions={[
