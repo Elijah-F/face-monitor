@@ -2,12 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
+from typing import Tuple
 
 import common
 import cv2
 import dlib
 import numpy as np
 from imutils import face_utils
+from scipy.spatial import distance
 
 K = [
     6.5308391993466671e002,
@@ -68,7 +70,7 @@ class FaceHelper:
     def __init__(self):
         self.logger = common.init_logger("face_helper")
 
-    def mark_face_position(self, jpeg_image: bytes) -> bytes:
+    def mark_face_position(self, jpeg_image: bytes) -> Tuple[bytes, dict]:
         """mark face in image with square
         Args:
             jpeg_image(bytes): image bytes data
@@ -97,19 +99,25 @@ class FaceHelper:
         is_successed, buf = cv2.imencode(".jpeg", image)
         return buf.tobytes()
 
-    def mark_68_points(self, jpeg_image: bytes) -> bytes:
+    def mark_68_and_sleepy_points(self, jpeg_image: bytes) -> bytes:
         # read image
         nparr = np.fromstring(jpeg_image, dtype=np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         gray_image = cv2.cvtColor(image, code=cv2.COLOR_BGR2GRAY)
+        result = {"x": 0, "y": 0, "z": 0, "face": False, "sleepy": False}
 
         face_rects = self.detector(gray_image, 0)
 
         if len(face_rects) > 0:
-            shape = self.predictor(gray_image, face_rects[0])
-            shape = face_utils.shape_to_np(shape)
+            result["face"] = True
+
+            origin_shape = self.predictor(gray_image, face_rects[0])
+            shape = face_utils.shape_to_np(origin_shape)
 
             reprojectdst, euler_angle = self.get_head_pose(shape)
+            result["x"] = euler_angle[0, 0]
+            result["y"] = euler_angle[1, 0]
+            result["z"] = euler_angle[2, 0]
 
             for start, end in line_pairs:
                 cv2.line(image, reprojectdst[start], reprojectdst[end], (0, 0, 255))
@@ -124,7 +132,7 @@ class FaceHelper:
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.5,
                 (0, 0, 0),
-                thickness=1,
+                thickness=2,
             )
             cv2.putText(
                 image,
@@ -133,7 +141,7 @@ class FaceHelper:
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.5,
                 (0, 0, 0),
-                thickness=1,
+                thickness=2,
             )
             cv2.putText(
                 image,
@@ -142,11 +150,42 @@ class FaceHelper:
                 cv2.FONT_HERSHEY_SIMPLEX,
                 0.5,
                 (0, 0, 0),
-                thickness=1,
+                thickness=2,
             )
 
+            left_eye, right_eye = list(), list()
+            for n in range(36, 42):
+                x = origin_shape.part(n).x
+                y = origin_shape.part(n).y
+                left_eye.append((x, y))
+                next_point = n + 1
+                if n == 41:
+                    next_point = 36
+                x2 = origin_shape.part(next_point).x
+                y2 = origin_shape.part(next_point).y
+                cv2.line(image, (x, y), (x2, y2), (0, 255, 0), 1)
+
+            for n in range(42, 48):
+                x = origin_shape.part(n).x
+                y = origin_shape.part(n).y
+                right_eye.append((x, y))
+                next_point = n + 1
+                if n == 47:
+                    next_point = 42
+                x2 = origin_shape.part(next_point).x
+                y2 = origin_shape.part(next_point).y
+                cv2.line(image, (x, y), (x2, y2), (0, 255, 0), 1)
+
+            left_ear = self.calculate_ear(left_eye)
+            right_ear = self.calculate_ear(right_eye)
+
+            ear = round((left_ear + right_ear) / 2, 2)
+            if ear < 0.16:
+                result["sleepy"] = True
+                cv2.putText(image, "Sleepy!", (20, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+
         is_successed, buf = cv2.imencode(".jpeg", image)
-        return buf.tobytes()
+        return buf.tobytes(), result
 
     def get_head_pose(self, shape):
 
@@ -178,3 +217,10 @@ class FaceHelper:
         _, _, _, _, _, _, euler_angle = cv2.decomposeProjectionMatrix(pose_mat)
 
         return reprojectdst, euler_angle
+
+    def calculate_ear(self, eye):
+        A = distance.euclidean(eye[1], eye[5])
+        B = distance.euclidean(eye[2], eye[4])
+        C = distance.euclidean(eye[0], eye[3])
+        ear_aspect_ratio = (A + B) / (2.0 * C)
+        return ear_aspect_ratio

@@ -5,11 +5,14 @@ from collections import defaultdict
 
 import common
 
+RUNNING = 1
+ENDING = 0
+
 
 @common.hungry_singleton
 class RoomPool:
     def __init__(self):
-        self.pool = defaultdict(lambda: {"admin": None, "members": [], "real_imgs": {}})
+        self.pool = defaultdict(lambda: {"admin": None, "members": [], "real_imgs": {}, "unique_id": None, "status": RUNNING})
 
     def __iter__(self):
         return iter(self.pool)
@@ -23,6 +26,11 @@ class RoomPool:
 
 if __name__ == "__main__":
     room_pool = {
-        12345: {"admin": 17729505029, "members": [17729505029, 17729505030], "real_imgs": {}},
-        12346: {"admin": 17729505050, "members": [17729505050, 17729505051], "real_imgs": {}},
+        12345: {
+            "admin": 17729505029,
+            "members": [17729505029, 17729505030],
+            "real_imgs": {},
+            "unique_id": None,
+            "status": RUNNING,
+        },
     }

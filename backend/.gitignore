@@ -1,4 +1,4 @@
-/tools/shape_predictor_68_face_landmarks
+tools/shape_predictor_68_face_landmarks.dat
 test*
 
 # Byte-compiled / optimized / DLL files
