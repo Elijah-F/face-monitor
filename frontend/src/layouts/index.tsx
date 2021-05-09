@@ -1,5 +1,5 @@
 import ProLayout, { DefaultFooter } from '@ant-design/pro-layout';
-import { SmileOutlined, CrownOutlined, RadarChartOutlined, UserOutlined } from '@ant-design/icons';
+import { SmileOutlined, CrownOutlined, RadarChartOutlined, UserOutlined, HistoryOutlined } from '@ant-design/icons';
 import React, { useEffect } from 'react';
 import { Link, useHistory, useSelector, useLocation } from 'umi';
 import LoginLayout from './LoginLayout';
@@ -18,9 +18,9 @@ const complexMenu = [
     icon: <RadarChartOutlined />,
   },
   {
-    path: '/imageFlow',
-    name: 'Image Flow',
-    icon: <CrownOutlined />,
+    path: '/history',
+    name: 'History',
+    icon: <HistoryOutlined />,
   },
 ];
 
