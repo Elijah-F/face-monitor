@@ -55,11 +55,10 @@ const History: React.FC = () => {
         {history === undefined
           ? null
           : Object.keys(history['bar']).map((element) => {
-              console.log(element);
-              console.log(history['bar'][element]);
               return (
                 <Col key={element} span={6}>
                   <Card
+                    title={history['job_date'][element]}
                     actions={[
                       <SettingOutlined key="setting" />,
                       <EditOutlined key="edit" />,

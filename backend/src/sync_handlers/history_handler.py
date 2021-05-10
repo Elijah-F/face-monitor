@@ -15,7 +15,7 @@ class HistoryAPI(tornado.web.RequestHandler):
         rows = self.db_operator.select_history(phone)
 
         data = defaultdict(lambda: defaultdict(int))
-        bar, pie = defaultdict(list), defaultdict(list)
+        bar, pie, job_date = defaultdict(list), defaultdict(list), dict()
 
         for row in rows:
             data[row["job_id"]]["face"] += row["detected_face"]
@@ -26,6 +26,9 @@ class HistoryAPI(tornado.web.RequestHandler):
                 not row["detected_face"] or row["sleepy"] or row["speak"] or row["smile"]
             )
             data[row["job_id"]]["total"] += 1
+
+            if row["job_id"] not in job_date:
+                job_date[row["job_id"]] = str(row["insert_time"])
 
         for key, value in data.items():
             indexs = ["face", "sleepy", "speak", "smile"]
@@ -42,7 +45,7 @@ class HistoryAPI(tornado.web.RequestHandler):
             pie[key].append({"type": "异常情况", "value": value["total_abnormal"]})
             pie[key].append({"type": "正常情况", "value": value["total"] - value["total_abnormal"]})
 
-        self.write({"bar": bar, "pie": pie})
+        self.write({"bar": bar, "pie": pie, "job_date": job_date})
 
 
 API_NAME = "/history"
