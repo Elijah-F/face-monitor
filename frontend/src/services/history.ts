@@ -1,13 +1,18 @@
 import request from '../utils/request';
 
-export interface HistoryItem {
-  smile_rate: number;
-  lost_face_rate: number;
-  speak: number;
+export interface HistoryBarItem {
+  index: string;
+  proportion: string;
+  value: number;
+}
+export interface HistoryPieItem {
+  type: string;
+  value: number;
 }
 
 export interface HistoryType {
-  job_id: HistoryItem;
+  bar: any;
+  pie: any;
 }
 
 export async function getHistory(phone: string): Promise<HistoryType> {
