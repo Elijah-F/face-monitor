@@ -70,7 +70,7 @@ class FaceHelper:
     def __init__(self):
         self.logger = common.init_logger("face_helper")
 
-    def mark_face_position(self, jpeg_image: bytes) -> Tuple[bytes, dict]:
+    def mark_face_position(self, jpeg_image: bytes) -> bytes:
         """mark face in image with square
         Args:
             jpeg_image(bytes): image bytes data
@@ -99,25 +99,25 @@ class FaceHelper:
         is_successed, buf = cv2.imencode(".jpeg", image)
         return buf.tobytes()
 
-    def mark_68_and_sleepy_points(self, jpeg_image: bytes) -> bytes:
+    def mark_68_and_sleepy_points(self, jpeg_image: bytes) -> Tuple[bytes, dict]:
         # read image
         nparr = np.fromstring(jpeg_image, dtype=np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         gray_image = cv2.cvtColor(image, code=cv2.COLOR_BGR2GRAY)
-        result = {"x": 0, "y": 0, "z": 0, "face": False, "sleepy": False}
+        result = {"x": 0, "y": 0, "z": 0, "detected_face": False, "sleepy": False}
 
         face_rects = self.detector(gray_image, 0)
 
         if len(face_rects) > 0:
-            result["face"] = True
+            result["detected_face"] = True
 
             origin_shape = self.predictor(gray_image, face_rects[0])
             shape = face_utils.shape_to_np(origin_shape)
 
             reprojectdst, euler_angle = self.get_head_pose(shape)
-            result["x"] = euler_angle[0, 0]
-            result["y"] = euler_angle[1, 0]
-            result["z"] = euler_angle[2, 0]
+            result["x"] = round(euler_angle[0, 0], 2)
+            result["y"] = round(euler_angle[1, 0], 2)
+            result["z"] = round(euler_angle[2, 0], 2)
 
             for start, end in line_pairs:
                 cv2.line(image, reprojectdst[start], reprojectdst[end], (0, 0, 255))

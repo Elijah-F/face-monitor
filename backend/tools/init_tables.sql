@@ -8,8 +8,17 @@ CREATE TABLE IF NOT EXISTS user_info (
     register_timestamp TIMESTAMP NOT NULL DEFAULT current_timestamp()
 );
 
-/* CREATE TABLE IF NOT EXISTS room_info ( */
-/*     id VARCHAR(10) PRIMARY KEY NOT NULL, */
-/*     is_using BOOLEAN, */
-/*     create_time TIMESTAMP NOT NULL DEFAULT current_timestamp() */
-/* ) */
+CREATE TABLE IF NOT EXISTS history (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    job_id VARCHAR(256) NOT NULL,
+    phone VARCHAR(11) NOT NULL,
+    meeting_number_str VARCHAR(16) NOT NULL,
+    sleepy BOOLEAN NOT NULL COMMENT '是否检测到睡意',
+    detected_face BOOLEAN NOT NULL COMMENT '是否探测到人脸',
+    smile BOOLEAN NOT NULL COMMENT '是否检测到微笑',
+    speak BOOLEAN NOT NULL COMMENT '是否检测到讲话',
+    x FLOAT NOT NULL COMMENT '人脸的x坐标',
+    y FLOAT NOT NULL COMMENT '人脸的y坐标',
+    z FLOAT NOT NULL COMMENT '人脸的z坐标',
+    insert_time TIMESTAMP NOT NULL DEFAULT current_timestamp()
+);

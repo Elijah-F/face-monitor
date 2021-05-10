@@ -5,13 +5,14 @@ import uuid
 
 import common
 import tornado.websocket
-from helpers import face_helper, room_pool, utils
+from helpers import db_operator, face_helper, room_pool, utils
 
 
 class RealTimeAPI(tornado.websocket.WebSocketHandler):
     logger = common.init_logger("real_time")
     face = face_helper.FaceHelper()
     rooms = room_pool.RoomPool()
+    db_operator = db_operator.DbOperator()
 
     def check_origin(self, origin):
         allowed = ["http://192.168.12.133:8998"]
@@ -66,8 +67,20 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
         jpeg = utils.webp_2_others(base64_webp_str)
         # jpeg_face = self.face.mark_face_position(jpeg)
         jpeg_face, result = self.face.mark_68_and_sleepy_points(jpeg)
-
-        # TODO: insert result into mysql
+        default_data = {
+            "job_id": self.rooms[self.room]["unique_id"],
+            "phone": self.phone,
+            "meeting_number_str": str(self.room),
+            "sleepy": False,
+            "detected_face": False,
+            "smile": False,
+            "speak": False,
+            "x": 0,
+            "y": 0,
+            "z": 0,
+        }
+        data = {**default_data, **result}
+        self.db_operator.insert_history(data)
 
         base64_jpeg_str = utils.b64encode_image(jpeg_face)
         img_tag_src = "".join(["data:image/jpeg;base64,", base64_jpeg_str])

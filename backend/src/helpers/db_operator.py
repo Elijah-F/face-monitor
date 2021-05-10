@@ -17,3 +17,6 @@ class DbOperator:
             sql += " AND phone='{}'".format(phone)
         rows = self.db_helper.query(sql)
         return rows
+
+    def insert_history(self, data: dict):
+        self.db_helper.insert("history", data)
