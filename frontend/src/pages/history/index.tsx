@@ -2,11 +2,26 @@ import React, { useState } from 'react';
 import { getHistory, HistoryType } from '@/services/history';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
 import { Input, Divider, Row, Col, Card } from 'antd';
-import { Bar, Pie } from '@ant-design/charts';
+import { Bar, Pie, Line } from '@ant-design/charts';
 
 const History: React.FC = () => {
   const [history, setHistory] = useState<HistoryType>();
 
+  const lineConfig = {
+    xField: 'time',
+    yField: 'value',
+    seriesField: 'index',
+    yAxis: {
+      label: {
+        formatter: function formatter(v) {
+          return ''.concat(v).replace(/\d{1,3}(?=(\d{3})+$)/g, function (s) {
+            return ''.concat(s, ',');
+          });
+        },
+      },
+    },
+    color: ['#1979C9', '#D62A0D', '#FAA219', '#7cb305'],
+  };
   const barConfig = {
     style: {
       height: 200,
@@ -50,6 +65,8 @@ const History: React.FC = () => {
           setHistory(data);
         }}
       ></Input.Search>
+      <Divider />
+      {history === undefined ? null : <Line data={history['line']} {...lineConfig} />}
       <Divider />
       <Row gutter={[16, 16]}>
         {history === undefined

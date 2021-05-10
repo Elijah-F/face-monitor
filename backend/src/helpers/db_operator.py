@@ -24,6 +24,6 @@ class DbOperator:
     def select_history(self, phone=None):
         sql = "SELECT * FROM history WHERE 1=1"
         if phone is not None:
-            sql += " AND phone='{}'".format(phone)
+            sql += " AND phone='{}' ORDER BY insert_time asc".format(phone)
         rows = self.db_helper.query(sql)
         return rows

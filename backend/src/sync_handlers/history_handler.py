@@ -15,7 +15,7 @@ class HistoryAPI(tornado.web.RequestHandler):
         rows = self.db_operator.select_history(phone)
 
         data = defaultdict(lambda: defaultdict(int))
-        bar, pie, job_date = defaultdict(list), defaultdict(list), dict()
+        bar, pie, line, job_date = defaultdict(list), defaultdict(list), list(), dict()
 
         for row in rows:
             data[row["job_id"]]["face"] += row["detected_face"]
@@ -45,7 +45,28 @@ class HistoryAPI(tornado.web.RequestHandler):
             pie[key].append({"type": "异常情况", "value": value["total_abnormal"]})
             pie[key].append({"type": "正常情况", "value": value["total"] - value["total_abnormal"]})
 
-        self.write({"bar": bar, "pie": pie, "job_date": job_date})
+        for job_id, date in job_date.items():
+            indexs = ["face", "sleepy", "speak", "smile"]
+
+            for index in indexs:
+                if index == "face":
+                    line.append(
+                        {
+                            "time": date,
+                            "index": index,
+                            "value": round((data[job_id]["total"] - data[job_id][index]) / data[job_id]["total"], 2),
+                        }
+                    )
+                    continue
+                line.append(
+                    {
+                        "time": date,
+                        "index": index,
+                        "value": round(data[job_id][index] / data[job_id]["total"], 2),
+                    }
+                )
+
+        self.write({"bar": bar, "pie": pie, "line": line, "job_date": job_date})
 
 
 API_NAME = "/history"
