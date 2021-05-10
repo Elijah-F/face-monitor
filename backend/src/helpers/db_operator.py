@@ -20,3 +20,10 @@ class DbOperator:
 
     def insert_history(self, data: dict):
         self.db_helper.insert("history", data)
+
+    def select_history(self, phone=None):
+        sql = "SELECT * FROM history WHERE 1=1"
+        if phone is not None:
+            sql += " AND phone='{}'".format(phone)
+        rows = self.db_helper.query(sql)
+        return rows
