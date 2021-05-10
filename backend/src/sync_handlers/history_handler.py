@@ -23,15 +23,22 @@ class HistoryAPI(tornado.web.RequestHandler):
             data[row["job_id"]]["speak"] += row["speak"]
             data[row["job_id"]]["smile"] += row["smile"]
             data[row["job_id"]]["total_abnormal"] += (
-                row["detected_face"] or row["sleepy"] or row["speak"] or row["smile"]
+                not row["detected_face"] or row["sleepy"] or row["speak"] or row["smile"]
             )
             data[row["job_id"]]["total"] += 1
 
         for key, value in data.items():
             indexs = ["face", "sleepy", "speak", "smile"]
+
             for index in indexs:
+                if index == "face":
+                    bar[key].append({"index": index, "proportion": "abnormal", "value": value["total"] - value[index]})
+                    bar[key].append({"index": index, "proportion": "general", "value": value[index]})
+                    continue
+
                 bar[key].append({"index": index, "proportion": "abnormal", "value": value[index]})
                 bar[key].append({"index": index, "proportion": "general", "value": value["total"] - value[index]})
+
             pie[key].append({"type": "异常情况", "value": value["total_abnormal"]})
             pie[key].append({"type": "正常情况", "value": value["total"] - value["total_abnormal"]})
 
