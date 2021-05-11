@@ -103,7 +103,7 @@ const RealTime: React.FC = () => {
               if (!isPlaying) {
                 // click START
                 setIsPlaying(!isPlaying);
-                sendMessage("monitor_begin")
+                sendMessage('monitor_begin');
               } else {
                 // click STOP
                 setPopVisible(true);
