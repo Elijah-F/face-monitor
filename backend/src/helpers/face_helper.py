@@ -104,7 +104,14 @@ class FaceHelper:
         nparr = np.fromstring(jpeg_image, dtype=np.uint8)
         image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         gray_image = cv2.cvtColor(image, code=cv2.COLOR_BGR2GRAY)
-        result = {"x": 0, "y": 0, "z": 0, "detected_face": False, "sleepy": False}
+        result = {"x": 0, "y": 0, "z": 0, "detected_face": False, "sleepy": False, "smile": False}
+
+        # smile detection
+        smile_cascade = cv2.CascadeClassifier(os.path.join(cv2.data.haarcascades, "haarcascade_smile.xml"))
+        smiles = smile_cascade.detectMultiScale(gray_image, scaleFactor=1.5, minNeighbors=15)
+        for (sx, sy, sw, sh) in smiles:
+            cv2.rectangle(image, (sx, sy), ((sx + sw), (sy + sh)), (0, 255, 0), 1)
+            result["smile"] = True
 
         face_rects = self.detector(gray_image, 0)
 
