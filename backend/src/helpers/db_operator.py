@@ -27,3 +27,13 @@ class DbOperator:
             sql += " AND phone='{}' ORDER BY insert_time asc".format(phone)
         rows = self.db_helper.query(sql)
         return rows
+
+    def insert_image_history(self, data: dict):
+        self.db_helper.insert("image_history", data)
+
+    def select_image_history(self, job_id=None):
+        sql = "SELECT * FROM image_history WHERE 1=1"
+        if job_id is not None:
+            sql += " AND job_id='{}'".format(job_id)
+        rows = self.db_helper.query(sql)
+        return rows

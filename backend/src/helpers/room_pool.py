@@ -12,7 +12,9 @@ ENDING = 0
 @common.hungry_singleton
 class RoomPool:
     def __init__(self):
-        self.pool = defaultdict(lambda: {"admin": None, "members": [], "real_imgs": {}, "unique_id": None, "status": RUNNING})
+        self.pool = defaultdict(
+            lambda: {"admin": None, "members": [], "real_imgs": {}, "unique_id": None, "status": ENDING}
+        )
 
     def __iter__(self):
         return iter(self.pool)

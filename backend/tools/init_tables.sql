@@ -22,3 +22,10 @@ CREATE TABLE IF NOT EXISTS history (
     z FLOAT NOT NULL COMMENT '人脸的z坐标',
     insert_time TIMESTAMP NOT NULL DEFAULT current_timestamp()
 );
+
+CREATE TABLE IF NOT EXISTS image_history (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    job_id VARCHAR(256) NOT NULL,
+    type VARCHAR(16) NOT NULL,
+    image_data TEXT NOT NULL
+);

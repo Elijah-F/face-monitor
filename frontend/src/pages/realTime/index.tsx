@@ -74,7 +74,6 @@ const RealTime: React.FC = () => {
         },
         onOk: () => {
           setIsPlaying(!isPlaying);
-          sendMessage('monitor_begin');
         },
       });
     }

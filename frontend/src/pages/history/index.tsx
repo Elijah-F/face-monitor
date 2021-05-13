@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { getHistory, HistoryType } from '@/services/history';
+import { getHistory, HistoryType, getImageHistory, ImageHistoryType } from '@/services/history';
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { Input, Divider, Row, Col, Card } from 'antd';
+import { Input, Divider, Row, Col, Card, Modal } from 'antd';
 import { Bar, Pie, Line } from '@ant-design/charts';
 
 const History: React.FC = () => {
   const [history, setHistory] = useState<HistoryType>();
+  const [imageHistory, setImageHistory] = useState<ImageHistoryType>();
+  const [visible, setVisible] = useState<boolean>(false);
 
   const lineConfig = {
     xField: 'time',
@@ -55,6 +57,30 @@ const History: React.FC = () => {
   };
   return (
     <>
+      <Modal
+        visible={visible}
+        footer={null}
+        width="80%"
+        onCancel={() => {
+          setVisible(false);
+        }}
+      >
+        {!imageHistory
+          ? null
+          : Object.keys(imageHistory).map((element) => {
+              return (
+                <Row gutter={[16, 16]} key={element}>
+                  {imageHistory[element].map((ele) => {
+                    return (
+                      <Col span={4}>
+                        <img width="100%" src={ele} key={ele} />
+                      </Col>
+                    );
+                  })}
+                </Row>
+              );
+            })}
+      </Modal>
       <Input.Search
         placeholder="input search phone"
         enterButton
@@ -78,7 +104,15 @@ const History: React.FC = () => {
                     title={history['job_date'][element]}
                     actions={[
                       <SettingOutlined key="setting" />,
-                      <EditOutlined key="edit" />,
+                      <EditOutlined
+                        onClick={async () => {
+                          const data = await getImageHistory(element);
+                          console.log(data);
+                          setImageHistory(data);
+                          setVisible(true);
+                        }}
+                        key="edit"
+                      />,
                       <EllipsisOutlined key="ellipsis" />,
                     ]}
                   >

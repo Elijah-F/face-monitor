@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import re
 import uuid
+from datetime import datetime, timedelta
 
 import common
 import tornado.websocket
@@ -24,6 +25,7 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
     def open(self, *args, **kwargs):
         self.phone = self.get_query_argument("phone")
         self.room = self.get_query_argument("room")
+        self.last_insert_image_history_time = datetime.now()
 
         if self.room not in self.rooms:
             # create a new room
@@ -49,9 +51,11 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         if message == "monitor_begin":
             self.rooms[self.room]["status"] = room_pool.RUNNING
+            self.logger.info("start monitor!")
             return
         if message == "monitor_finish":
             self.rooms[self.room]["status"] = room_pool.ENDING
+            self.logger.info("finish monitor!")
             return
 
         # admin recieve other's imgs
@@ -80,10 +84,19 @@ class RealTimeAPI(tornado.websocket.WebSocketHandler):
             "z": 0,
         }
         data = {**default_data, **result}
-        self.db_operator.insert_history(data)
+
+        if is_monitoring:
+            self.db_operator.insert_history(data)
 
         base64_jpeg_str = utils.b64encode_image(jpeg_face)
         img_tag_src = "".join(["data:image/jpeg;base64,", base64_jpeg_str])
+
+        if is_monitoring and (result["smile"] or not result["detected_face"] or result["sleepy"]):
+            if datetime.now() - timedelta(seconds=1) > self.last_insert_image_history_time:
+                tp = "smile" if result["smile"] else "face" if result["detected_face"] else "sleepy"
+                data = {"job_id": self.rooms[self.room]["unique_id"], "type": tp, "image_data": img_tag_src}
+                self.db_operator.insert_image_history(data)
+                self.last_insert_image_history_time = datetime.now()
 
         self.rooms[self.room]["real_imgs"][self.phone] = img_tag_src
         self.write_message({self.phone: img_tag_src})
