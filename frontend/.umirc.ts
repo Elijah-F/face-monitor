@@ -5,6 +5,10 @@ export default defineConfig({
     type: 'none',
   },
   fastRefresh: {},
+  dva: {
+    immer: true,
+    hmr: true,
+  },
   proxy: {
     '/api': {
       target: 'http://127.0.0.1:9527',
