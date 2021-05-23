@@ -99,10 +99,13 @@ class FaceHelper:
         is_successed, buf = cv2.imencode(".jpeg", image)
         return buf.tobytes()
 
-    def mark_68_and_sleepy_points(self, jpeg_image: bytes) -> Tuple[bytes, dict]:
+    def mark_68_and_sleepy_points(self, jpeg_image: bytes, is_jpeg=True) -> Tuple[bytes, dict]:
         # read image
-        nparr = np.fromstring(jpeg_image, dtype=np.uint8)
-        image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        if is_jpeg:
+            nparr = np.fromstring(jpeg_image, dtype=np.uint8)
+            image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        else:
+            image = jpeg_image
         gray_image = cv2.cvtColor(image, code=cv2.COLOR_BGR2GRAY)
         result = {"x": 0, "y": 0, "z": 0, "detected_face": False, "sleepy": False, "smile": False}
 
